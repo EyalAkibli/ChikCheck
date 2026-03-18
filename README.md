@@ -82,31 +82,33 @@ clasp login
 
 ### 1. Create the Google Sheet
 
-- New Google Sheet → rename first tab to `Guests`
-- Row 1: header (`ID` in A1)
-- Paste your authorized ID list in column A from row 2 downward
-- Column B: leave blank — not used
+One spreadsheet, two tabs:
+
+**Tab: `Guests`**
+- A1: `ID` (header)
+- A2 onward: paste your ID list — from Excel, another sheet, anywhere
+
+**Tab: `Config`**
+
+| A | B |
+|---|---|
+| ENTRY_KEY | your-entry-word |
+| EXIT_KEY | your-exit-word |
+
+To rotate keys before an event: just edit cells B1/B2. No code, no editor.
 
 ### 2. Link to Apps Script
 
 ```bash
 # Open the sheet → Extensions → Apps Script → copy the Script ID from the URL
-# Paste it into .clasp.json:
-#   "scriptId": "YOUR_SCRIPT_ID_HERE"
+# Paste it into .clasp.json:  "scriptId": "YOUR_SCRIPT_ID_HERE"
 
 clasp push
 ```
 
-### 3. Set Gate Keys
+### 3. Guest list
 
-In the Apps Script editor: **Project Settings → Script Properties**
-
-| Property | Value | Where to display |
-|----------|-------|-----------------|
-| `ENTRY_KEY` | e.g. `sun42` | Sign at entry point |
-| `EXIT_KEY`  | e.g. `moon7` | Sign at exit point |
-
-Change both keys before each event/day as needed.
+Paste your ID column directly from Excel into the `Guests` tab, column A from row 2. Nothing else needed — the backend reads whatever is in that column.
 
 ### 4. Deploy as Web App
 
