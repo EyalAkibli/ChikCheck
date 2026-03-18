@@ -9,7 +9,7 @@
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: #111;
+      background-color: #111;
       color: #f0f0f0;
       min-height: 100dvh;
       display: flex;
@@ -17,6 +17,32 @@
       align-items: center;
       justify-content: center;
       padding: 1.5rem;
+      /* smooth background color transitions between all states */
+      transition: background-color 0.8s ease;
+    }
+
+    /* ── Persistent background states (stay until action ends) ── */
+    body.bg-entry   { background-color: #0d2e1a; } /* dark forest green  */
+    body.bg-exit    { background-color: #2e1f00; } /* dark amber         */
+    body.bg-warning { background-color: #2a1f00; } /* dark ochre — bouncer intervention */
+    body.bg-expired { background-color: #111;    } /* back to dark (transition handles it) */
+
+    /* ── Single soft flash overlay ── */
+    /* A full-screen div that pulses once on top of everything, then vanishes */
+    #flash-overlay {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0;
+      z-index: 999;
+    }
+    #flash-overlay.flash-green  { background: #00c853; animation: pulse-once 0.7s ease-out forwards; }
+    #flash-overlay.flash-amber  { background: #ff8f00; animation: pulse-once 0.7s ease-out forwards; }
+    #flash-overlay.flash-red    { background: #c62828; animation: pulse-once 0.7s ease-out forwards; }
+
+    @keyframes pulse-once {
+      0%   { opacity: 0.75; }
+      100% { opacity: 0; }
     }
 
     /* ── Form screen ── */
@@ -73,7 +99,7 @@
     button:active:not(:disabled) { transform: scale(0.98); }
     button:disabled { opacity: 0.5; cursor: not-allowed; }
 
-    .error-msg { color: #ff6b6b; font-size: 0.85rem; margin-top: 0.6rem; text-align: center; min-height: 1.2em; }
+    .error-msg { color: #ff8a80; font-size: 0.85rem; margin-top: 0.6rem; text-align: center; min-height: 1.2em; }
 
     /* ── Result screen ── */
     #result-screen {
@@ -96,9 +122,10 @@
       border-radius: 99px;
       margin-bottom: 1rem;
     }
-    .badge-entry   { background: rgba(0,200,83,0.15);  color: #00e676; border: 1px solid #00e676; }
-    .badge-exit    { background: rgba(255,196,0,0.12); color: #ffd740; border: 1px solid #ffd740; }
-    .badge-expired { background: rgba(255,82,82,0.15); color: #ff5252; border: 1px solid #ff5252; }
+    .badge-entry   { background: rgba(0,200,83,0.15);  color: #69f0ae; border: 1px solid #69f0ae; }
+    .badge-exit    { background: rgba(255,171,0,0.12); color: #ffca28; border: 1px solid #ffca28; }
+    .badge-warning { background: rgba(255,152,0,0.12); color: #ffb74d; border: 1px solid #ffb74d; }
+    .badge-expired { background: rgba(198,40,40,0.15); color: #ef9a9a; border: 1px solid #ef9a9a; }
 
     .result-id {
       font-size: 3.5rem;
@@ -113,14 +140,14 @@
     .result-msg {
       font-size: 1.2rem;
       font-weight: 600;
-      color: #aaa;
+      color: #bbb;
       margin-bottom: 2rem;
     }
 
     /* ── Clock block ── */
     .clock-block {
       width: 100%;
-      background: #1c1c1e;
+      background: rgba(0,0,0,0.3);
       border-radius: 14px;
       padding: 1.2rem 1rem;
       margin-bottom: 1rem;
@@ -129,12 +156,7 @@
       align-items: center;
       gap: 0.15rem;
     }
-    .clock-label {
-      font-size: 0.65rem;
-      color: #555;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-    }
+    .clock-label { font-size: 0.65rem; color: rgba(255,255,255,0.35); text-transform: uppercase; letter-spacing: 0.1em; }
     #live-clock {
       font-size: 2.8rem;
       font-weight: 900;
@@ -147,7 +169,7 @@
     /* ── Countdown block ── */
     .countdown-block {
       width: 100%;
-      background: #1c1c1e;
+      background: rgba(0,0,0,0.3);
       border-radius: 14px;
       padding: 1rem;
       margin-bottom: 1.5rem;
@@ -156,15 +178,16 @@
       align-items: center;
       gap: 0.15rem;
     }
-    .countdown-label { font-size: 0.65rem; color: #555; text-transform: uppercase; letter-spacing: 0.1em; }
+    .countdown-label { font-size: 0.65rem; color: rgba(255,255,255,0.35); text-transform: uppercase; letter-spacing: 0.1em; }
     #countdown {
       font-size: 1.8rem;
       font-weight: 800;
       font-family: 'Courier New', monospace;
       font-variant-numeric: tabular-nums;
       letter-spacing: 2px;
+      transition: color 0.5s;
     }
-    #countdown.urgent { color: #ff5252; }
+    #countdown.urgent { color: #ef9a9a !important; }
 
     #back-btn {
       background: rgba(255,255,255,0.08);
@@ -173,15 +196,6 @@
       padding: 0.75rem;
     }
     #back-btn:hover:not(:disabled) { background: rgba(255,255,255,0.15); }
-
-    /* ── Flash animations ── */
-    @keyframes flash-green  { 0%,100%{background:#007e33} 40%{background:#00e676} }
-    @keyframes flash-yellow { 0%,100%{background:#ff8f00} 40%{background:#ffd740} }
-    @keyframes flash-red    { 0%,100%{background:#b71c1c} 40%{background:#ff5252} }
-
-    body.flash-green  { animation: flash-green  0.35s ease 3; }
-    body.flash-yellow { animation: flash-yellow 0.35s ease 3; }
-    body.flash-red    { animation: flash-red    0.35s ease 3; }
 
     .spinner {
       display: inline-block;
@@ -197,6 +211,9 @@
   </style>
 </head>
 <body>
+
+  <!-- Single-flash overlay: covers screen for one soft pulse, then disappears -->
+  <div id="flash-overlay"></div>
 
   <!-- ── Entry Form ── -->
   <div id="form-screen">
@@ -222,13 +239,11 @@
     <div class="result-id"    id="result-id"></div>
     <div class="result-msg"   id="result-msg"></div>
 
-    <!-- Live clock — proves screen is running RIGHT NOW -->
     <div class="clock-block">
       <div class="clock-label">שעה נוכחית</div>
       <div id="live-clock">00:00:00</div>
     </div>
 
-    <!-- Countdown — expires the approval after 5 minutes -->
     <div class="countdown-block">
       <div class="countdown-label">תוקף אישור</div>
       <div id="countdown">05:00</div>
@@ -238,14 +253,14 @@
   </div>
 
 <script>
-  var clockInterval    = null;
+  var clockInterval     = null;
   var countdownInterval = null;
   var COUNTDOWN_SECONDS = 5 * 60;
 
   // ── Submit ──────────────────────────────────────────────
   function handleSubmit() {
-    var id  = document.getElementById('id-input').value.trim();
-    var key = document.getElementById('key-input').value.trim();
+    var id    = document.getElementById('id-input').value.trim();
+    var key   = document.getElementById('key-input').value.trim();
     var errEl = document.getElementById('error-msg');
     errEl.textContent = '';
 
@@ -268,33 +283,44 @@
     if (res.status === 'SUCCESS') {
       var isEntry = res.direction === 'entry';
       showResult({
-        badgeClass: isEntry ? 'badge-entry' : 'badge-exit',
-        badgeText:  isEntry ? '⬆ כניסה'    : '⬇ יציאה',
-        id:         res.id,
-        msg:        isEntry ? 'כניסה מאושרת ✓' : 'יציאה מאושרת ✓',
-        flashClass: isEntry ? 'flash-green' : 'flash-yellow',
-        countdownColor: isEntry ? '#00e676' : '#ffd740'
+        bgClass:        isEntry ? 'bg-entry'    : 'bg-exit',
+        flashClass:     isEntry ? 'flash-green' : 'flash-amber',
+        badgeClass:     isEntry ? 'badge-entry' : 'badge-exit',
+        badgeText:      isEntry ? '⬆ כניסה'    : '⬇ יציאה',
+        id:             res.id,
+        msg:            isEntry ? 'כניסה מאושרת ✓' : 'יציאה מאושרת ✓',
+        countdownColor: isEntry ? '#69f0ae' : '#ffca28',
+        showCountdown:  true
       });
       return;
     }
 
-    if (res.status === 'NOT_FOUND') {
-      flash('flash-red');
-      document.getElementById('error-msg').textContent = 'מספר זהות לא נמצא ברשימה.';
+    if (res.status === 'ALREADY_CHECKED_IN') {
+      // Stay yellow — bouncer resolves this, no auto-reset
+      showResult({
+        bgClass:        'bg-warning',
+        flashClass:     'flash-amber',
+        badgeClass:     'badge-warning',
+        badgeText:      '⚠ כבר נכנס',
+        id:             res.id || document.getElementById('id-input').value.trim(),
+        msg:            'דרוש אישור שומר',
+        countdownColor: '#ffb74d',
+        showCountdown:  false
+      });
       return;
     }
-    if (res.status === 'INVALID_KEY') {
-      flash('flash-red');
-      document.getElementById('error-msg').textContent = 'קוד שער שגוי.';
-      return;
-    }
-    flash('flash-red');
-    document.getElementById('error-msg').textContent = 'שגיאה: ' + (res.message || res.status);
+
+    // Errors — single red flash, stay on form
+    flashOverlay('flash-red');
+    document.getElementById('error-msg').textContent =
+      res.status === 'INVALID_KEY' ? 'קוד שער שגוי.'
+      : res.status === 'NOT_FOUND' ? 'מספר זהות לא נמצא ברשימה.'
+      : 'שגיאה: ' + (res.message || res.status);
   }
 
   function handleError() {
     resetBtn();
-    flash('flash-red');
+    flashOverlay('flash-red');
     document.getElementById('error-msg').textContent = 'שגיאת תקשורת. נסה שוב.';
   }
 
@@ -303,35 +329,54 @@
     document.getElementById('form-screen').style.display   = 'none';
     document.getElementById('result-screen').style.display = 'flex';
 
+    setBodyBg(opts.bgClass);
+    flashOverlay(opts.flashClass);
+
     var badge = document.getElementById('result-badge');
-    badge.className = 'result-badge ' + opts.badgeClass;
+    badge.className   = 'result-badge ' + opts.badgeClass;
     badge.textContent = opts.badgeText;
 
     document.getElementById('result-id').textContent  = opts.id;
     document.getElementById('result-msg').textContent = opts.msg;
+    document.getElementById('countdown').style.color  = opts.countdownColor;
 
-    document.getElementById('countdown').style.color = opts.countdownColor;
-
-    flash(opts.flashClass);
     startLiveClock();
-    startCountdown(COUNTDOWN_SECONDS);
+
+    var countdownBlock = document.querySelector('.countdown-block');
+    if (opts.showCountdown) {
+      countdownBlock.style.display = 'flex';
+      startCountdown(COUNTDOWN_SECONDS);
+    } else {
+      countdownBlock.style.display = 'none';
+    }
   }
 
-  // ── Live clock (local phone time) ────────────────────
+  // ── Body background state ─────────────────────────────
+  // The background color IS the approval signal — it persists until the action ends.
+  function setBodyBg(cls) {
+    document.body.classList.remove('bg-entry', 'bg-exit', 'bg-warning', 'bg-expired');
+    if (cls) document.body.classList.add(cls);
+  }
+
+  // ── Single soft flash overlay ─────────────────────────
+  function flashOverlay(cls) {
+    var el = document.getElementById('flash-overlay');
+    el.className = ''; // reset
+    void el.offsetWidth; // reflow to restart animation
+    el.className = cls;
+  }
+
+  // ── Live clock ────────────────────────────────────────
   function startLiveClock() {
     stopLiveClock();
     tickClock();
     clockInterval = setInterval(tickClock, 1000);
   }
-
   function tickClock() {
     var now = new Date();
-    var h = pad(now.getHours());
-    var m = pad(now.getMinutes());
-    var s = pad(now.getSeconds());
-    document.getElementById('live-clock').textContent = h + ':' + m + ':' + s;
+    document.getElementById('live-clock').textContent =
+      pad(now.getHours()) + ':' + pad(now.getMinutes()) + ':' + pad(now.getSeconds());
   }
-
   function stopLiveClock() {
     if (clockInterval) { clearInterval(clockInterval); clockInterval = null; }
   }
@@ -347,64 +392,51 @@
       if (remaining <= 0) { stopCountdown(); showExpired(); }
     }, 1000);
   }
-
   function updateCountdownEl(secs) {
     var el = document.getElementById('countdown');
     el.textContent = pad(Math.floor(secs / 60)) + ':' + pad(secs % 60);
     el.classList.toggle('urgent', secs <= 30);
   }
-
   function stopCountdown() {
     if (countdownInterval) { clearInterval(countdownInterval); countdownInterval = null; }
   }
 
-  // ── Helpers ───────────────────────────────────────────
-  function flash(cls) {
-    document.body.classList.remove('flash-green', 'flash-yellow', 'flash-red');
-    void document.body.offsetWidth;
-    document.body.classList.add(cls);
-    setTimeout(function() { document.body.classList.remove(cls); }, 1200);
+  // ── Expired — action ends, single red flash, auto-reset ──
+  // UX: countdown hit zero = approval window closed. Red flash signals expiry.
+  // Screen shows briefly so user understands what happened, then resets.
+  function showExpired() {
+    stopLiveClock();
+
+    document.getElementById('result-badge').className   = 'result-badge badge-expired';
+    document.getElementById('result-badge').textContent = '⏱ פג תוקף';
+    document.getElementById('result-msg').textContent   = 'האישור פקע — יש לאמת מחדש';
+    document.getElementById('countdown').textContent    = '00:00';
+    document.getElementById('live-clock').textContent   = '--:--:--';
+
+    setBodyBg(null);         // start fading back to dark (#111) immediately
+    flashOverlay('flash-red'); // one soft red pulse over the fading background
+
+    setTimeout(resetToForm, 2500);
   }
 
-  function resetBtn() {
-    var btn = document.getElementById('submit-btn');
-    btn.disabled = false;
-    btn.innerHTML = 'אמת ✓';
-  }
-
+  // ── Reset ─────────────────────────────────────────────
   function resetToForm() {
     stopLiveClock();
     stopCountdown();
+    setBodyBg(null); // fade background back to #111
     document.getElementById('result-screen').style.display = 'none';
     document.getElementById('form-screen').style.display   = 'block';
+    document.getElementById('countdown').classList.remove('urgent');
     document.getElementById('id-input').value  = '';
     document.getElementById('key-input').value = '';
     document.getElementById('error-msg').textContent = '';
     document.getElementById('id-input').focus();
   }
 
-  // ── Expired state ─────────────────────────────────────
-  function showExpired() {
-    stopLiveClock();
-
-    // Overwrite result screen content with expiry message
-    document.getElementById('result-badge').textContent  = '⏱ פג תוקף';
-    document.getElementById('result-badge').className    = 'result-badge badge-expired';
-    document.getElementById('result-msg').textContent    = 'האישור פקע. יש לאמת מחדש.';
-    document.getElementById('countdown').textContent     = '00:00';
-    document.getElementById('countdown').style.color    = '#ff5252';
-    document.getElementById('live-clock').textContent   = '--:--:--';
-
-    // Flash red + freeze clock display
-    document.body.classList.remove('flash-green', 'flash-yellow', 'flash-red');
-    void document.body.offsetWidth;
-    document.body.classList.add('flash-red');
-
-    // Auto-reset to form after 3 seconds
-    setTimeout(function() {
-      document.body.classList.remove('flash-red');
-      resetToForm();
-    }, 3000);
+  function resetBtn() {
+    var btn = document.getElementById('submit-btn');
+    btn.disabled  = false;
+    btn.innerHTML = 'אמת ✓';
   }
 
   function pad(n) { return String(n).padStart(2, '0'); }
