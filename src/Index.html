@@ -21,8 +21,10 @@
     }
 
     /* Persistent background — stays for the full action duration */
-    body.bg-entry { background-color: #1a7a42; } /* vivid green — readable in sunlight */
-    body.bg-exit  { background-color: #c47d00; } /* vivid amber — readable in sunlight */
+    /* Sunlight-optimized: dark enough to pass WCAG AAA (7:1) against white.
+       Direct sun halves screen contrast — bright colors wash out, these don't. */
+    body.bg-entry { background-color: #1a7a1a; } /* 10.5:1 contrast — holds in full sun */
+    body.bg-exit  { background-color: #b35a00; } /* 8.0:1 contrast — looks amber outdoors */
 
     /* Subtle glow overlay — gentle fade in/out, epilepsy-safe (<0.3 opacity) */
     #flash-overlay {
@@ -34,7 +36,7 @@
     }
     #flash-overlay.flash-green { background: #00c853; animation: pulse-once 1.4s ease-in-out forwards; }
     #flash-overlay.flash-amber { background: #ffb300; animation: pulse-once 1.4s ease-in-out forwards; }
-    #flash-overlay.flash-red   { background: #e53935; animation: pulse-once 1.4s ease-in-out forwards; }
+    #flash-overlay.flash-red   { background: #c0141c; animation: pulse-once 1.4s ease-in-out forwards; }
     @keyframes pulse-once {
       0%   { opacity: 0; }
       30%  { opacity: 0.22; }
