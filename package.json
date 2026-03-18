@@ -1,0 +1,13 @@
+{
+  "name": "chik-check",
+  "version": "1.0.0",
+  "description": "Zero-infra event check-in via Google Apps Script",
+  "scripts": {
+    "test": "jest",
+    "push": "clasp push",
+    "deploy": "clasp deploy"
+  },
+  "devDependencies": {
+    "jest": "^29.0.0"
+  }
+}
