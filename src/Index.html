@@ -22,9 +22,9 @@
 
     /* Persistent background — stays for the full action duration */
     body.bg-entry { background-color: #0d2e1a; }
-    body.bg-exit  { background-color: #2e1f00; }
+    body.bg-exit  { background-color: #4a3000; } /* warm amber, clearly visible */
 
-    /* Single soft flash overlay — pulses once, then vanishes */
+    /* Subtle glow overlay — gentle fade in/out, epilepsy-safe (<0.3 opacity) */
     #flash-overlay {
       position: fixed;
       inset: 0;
@@ -32,10 +32,14 @@
       opacity: 0;
       z-index: 999;
     }
-    #flash-overlay.flash-green { background: #00c853; animation: pulse-once 0.7s ease-out forwards; }
-    #flash-overlay.flash-amber { background: #ff8f00; animation: pulse-once 0.7s ease-out forwards; }
-    #flash-overlay.flash-red   { background: #c62828; animation: pulse-once 0.7s ease-out forwards; }
-    @keyframes pulse-once { 0% { opacity: 0.75; } 100% { opacity: 0; } }
+    #flash-overlay.flash-green { background: #00c853; animation: pulse-once 1.4s ease-in-out forwards; }
+    #flash-overlay.flash-amber { background: #ffb300; animation: pulse-once 1.4s ease-in-out forwards; }
+    #flash-overlay.flash-red   { background: #e53935; animation: pulse-once 1.4s ease-in-out forwards; }
+    @keyframes pulse-once {
+      0%   { opacity: 0; }
+      30%  { opacity: 0.22; }
+      100% { opacity: 0; }
+    }
 
     /* Form */
     h1 { font-size: 2rem; font-weight: 800; letter-spacing: -1px; color: #fff; margin-bottom: 0.2rem; }
