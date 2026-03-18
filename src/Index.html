@@ -24,7 +24,6 @@
     /* ── Persistent background states (stay until action ends) ── */
     body.bg-entry   { background-color: #0d2e1a; } /* dark forest green  */
     body.bg-exit    { background-color: #2e1f00; } /* dark amber         */
-    body.bg-warning { background-color: #2a1f00; } /* dark ochre — bouncer intervention */
     body.bg-expired { background-color: #111;    } /* back to dark (transition handles it) */
 
     /* ── Single soft flash overlay ── */
@@ -124,7 +123,6 @@
     }
     .badge-entry   { background: rgba(0,200,83,0.15);  color: #69f0ae; border: 1px solid #69f0ae; }
     .badge-exit    { background: rgba(255,171,0,0.12); color: #ffca28; border: 1px solid #ffca28; }
-    .badge-warning { background: rgba(255,152,0,0.12); color: #ffb74d; border: 1px solid #ffb74d; }
     .badge-expired { background: rgba(198,40,40,0.15); color: #ef9a9a; border: 1px solid #ef9a9a; }
 
     .result-id {
@@ -291,21 +289,6 @@
         msg:            isEntry ? 'כניסה מאושרת ✓' : 'יציאה מאושרת ✓',
         countdownColor: isEntry ? '#69f0ae' : '#ffca28',
         showCountdown:  true
-      });
-      return;
-    }
-
-    if (res.status === 'ALREADY_CHECKED_IN') {
-      // Stay yellow — bouncer resolves this, no auto-reset
-      showResult({
-        bgClass:        'bg-warning',
-        flashClass:     'flash-amber',
-        badgeClass:     'badge-warning',
-        badgeText:      '⚠ כבר נכנס',
-        id:             res.id || document.getElementById('id-input').value.trim(),
-        msg:            'דרוש אישור שומר',
-        countdownColor: '#ffb74d',
-        showCountdown:  false
       });
       return;
     }
